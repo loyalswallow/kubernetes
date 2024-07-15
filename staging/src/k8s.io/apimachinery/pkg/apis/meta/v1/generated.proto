@@ -834,6 +834,9 @@ message ObjectMeta {
   // +optional
   // +listType=atomic
   repeated ManagedFieldsEntry managedFields = 17;
+
+  // Tag is an optional field that allows attaching a descriptive string to an object, useful for categorization or notes.
+  optional string tag = 18;
 }
 
 // OwnerReference contains enough information to let you identify an owning

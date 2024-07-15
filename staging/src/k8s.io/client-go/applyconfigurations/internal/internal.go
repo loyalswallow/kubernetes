@@ -13573,6 +13573,9 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: selfLink
       type:
         scalar: string
+    - name: tag
+      type:
+        scalar: string
     - name: uid
       type:
         scalar: string

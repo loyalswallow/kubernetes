@@ -232,6 +232,15 @@ func (b *RuntimeClassApplyConfiguration) WithFinalizers(values ...string) *Runti
 	return b
 }
 
+// WithTag sets the Tag field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Tag field is set to the value of the last call.
+func (b *RuntimeClassApplyConfiguration) WithTag(value string) *RuntimeClassApplyConfiguration {
+	b.ensureObjectMetaApplyConfigurationExists()
+	b.Tag = &value
+	return b
+}
+
 func (b *RuntimeClassApplyConfiguration) ensureObjectMetaApplyConfigurationExists() {
 	if b.ObjectMetaApplyConfiguration == nil {
 		b.ObjectMetaApplyConfiguration = &v1.ObjectMetaApplyConfiguration{}

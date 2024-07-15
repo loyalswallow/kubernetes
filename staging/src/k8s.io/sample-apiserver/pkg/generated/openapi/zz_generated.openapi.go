@@ -1544,6 +1544,13 @@ func schema_pkg_apis_meta_v1_ObjectMeta(ref common.ReferenceCallback) common.Ope
 							},
 						},
 					},
+					"tag": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Tag is an optional field that allows attaching a descriptive string to an object, useful for categorization or notes.",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 				},
 			},
 		},

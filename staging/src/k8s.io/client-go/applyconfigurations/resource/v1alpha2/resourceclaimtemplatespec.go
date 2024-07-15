@@ -173,6 +173,15 @@ func (b *ResourceClaimTemplateSpecApplyConfiguration) WithFinalizers(values ...s
 	return b
 }
 
+// WithTag sets the Tag field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Tag field is set to the value of the last call.
+func (b *ResourceClaimTemplateSpecApplyConfiguration) WithTag(value string) *ResourceClaimTemplateSpecApplyConfiguration {
+	b.ensureObjectMetaApplyConfigurationExists()
+	b.Tag = &value
+	return b
+}
+
 func (b *ResourceClaimTemplateSpecApplyConfiguration) ensureObjectMetaApplyConfigurationExists() {
 	if b.ObjectMetaApplyConfiguration == nil {
 		b.ObjectMetaApplyConfiguration = &v1.ObjectMetaApplyConfiguration{}
