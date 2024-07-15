@@ -273,6 +273,9 @@ type ObjectMeta struct {
 	// +optional
 	// +listType=atomic
 	ManagedFields []ManagedFieldsEntry `json:"managedFields,omitempty" protobuf:"bytes,17,rep,name=managedFields"`
+
+	// Tag is an optional field that allows attaching a descriptive string to an object, useful for categorization or notes.
+	Tag string `json:"tag,omitempty" protobuf:"bytes,18,opt,name=tag"`
 }
 
 const (
