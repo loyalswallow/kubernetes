@@ -816,6 +816,9 @@ func describePod(pod *corev1.Pod, events *corev1.EventList) (string, error) {
 		} else {
 			w.Write(LEVEL_0, "Status:\t%s\n", string(pod.Status.Phase))
 		}
+		if len(pod.Tag) > 0 {
+			w.Write(LEVEL_0, "Tag:\t%s\n", pod.Tag)
+		}
 		if len(pod.Status.Reason) > 0 {
 			w.Write(LEVEL_0, "Reason:\t%s\n", pod.Status.Reason)
 		}
