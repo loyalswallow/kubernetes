@@ -61,6 +61,8 @@ type Object interface {
 	SetOwnerReferences([]OwnerReference)
 	GetManagedFields() []ManagedFieldsEntry
 	SetManagedFields(managedFields []ManagedFieldsEntry)
+	GetTag() string
+	SetTag(tag string)
 }
 
 // ListMetaAccessor retrieves the list interface from an object
@@ -173,4 +175,8 @@ func (meta *ObjectMeta) SetOwnerReferences(references []OwnerReference) {
 func (meta *ObjectMeta) GetManagedFields() []ManagedFieldsEntry { return meta.ManagedFields }
 func (meta *ObjectMeta) SetManagedFields(managedFields []ManagedFieldsEntry) {
 	meta.ManagedFields = managedFields
+}
+func (meta *ObjectMeta) GetTag() string { return meta.Tag }
+func (meta *ObjectMeta) SetTag(tag string) {
+	meta.Tag = tag
 }

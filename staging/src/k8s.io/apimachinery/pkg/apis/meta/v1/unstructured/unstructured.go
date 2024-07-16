@@ -487,3 +487,15 @@ func (u *Unstructured) SetManagedFields(managedFields []metav1.ManagedFieldsEntr
 	}
 	u.setNestedSlice(items, "metadata", "managedFields")
 }
+
+func (u *Unstructured) GetTag() string {
+	return getNestedString(u.Object, "metadata", "tag")
+}
+
+func (u *Unstructured) SetTag(tag string) {
+	if len(tag) == 0 {
+		RemoveNestedField(u.Object, "metadata", "tag")
+		return
+	}
+	u.setNestedField(tag, "metadata", "tag")
+}
