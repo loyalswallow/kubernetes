@@ -68,6 +68,7 @@ import (
 	"k8s.io/kubectl/pkg/cmd/run"
 	"k8s.io/kubectl/pkg/cmd/scale"
 	"k8s.io/kubectl/pkg/cmd/set"
+	"k8s.io/kubectl/pkg/cmd/tag"
 	"k8s.io/kubectl/pkg/cmd/taint"
 	"k8s.io/kubectl/pkg/cmd/top"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
@@ -455,6 +456,7 @@ func NewKubectlCommand(o KubectlOptions) *cobra.Command {
 				label.NewCmdLabel(f, o.IOStreams),
 				annotate.NewCmdAnnotate("kubectl", f, o.IOStreams),
 				completion.NewCmdCompletion(o.IOStreams.Out, ""),
+				tag.NewCmdTag(f, o.IOStreams),
 			},
 		},
 	}
