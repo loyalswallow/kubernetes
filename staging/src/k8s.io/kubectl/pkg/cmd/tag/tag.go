@@ -25,12 +25,14 @@ var (
 	errTooManyArgs   = fmt.Errorf("too many arguments provided")
 	errNotEnoughArgs = fmt.Errorf("one or more resources must be specified as <resource> <name> or <resource>/<name>")
 	errEmptyTag      = fmt.Errorf("tag cannot be empty")
+	errTagWithFlag   = fmt.Errorf("tag and --rm cannot be specified together")
 )
 
 type TagOptions struct {
 	namespace string
 	resources []string
 	tag       string
+	untag     bool
 
 	builder                      *resource.Builder
 	unstructuredClientForMapping func(mapping *meta.RESTMapping) (resource.RESTClient, error)
@@ -58,6 +60,8 @@ func NewCmdTag(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.C
 			cmdutil.CheckErr(o.RunTag())
 		},
 	}
+
+	cmd.Flags().BoolVar(&o.untag, "rm", o.untag, "If true, remove existing tag.")
 
 	return cmd
 }
@@ -99,8 +103,12 @@ func (o *TagOptions) Validate() error {
 		return errNotEnoughArgs
 	}
 
-	if len(o.tag) == 0 {
+	if len(o.tag) == 0 && !o.untag {
 		return errEmptyTag
+	}
+
+	if len(o.tag) > 0 && o.untag {
+		return errTagWithFlag
 	}
 
 	tagLen := len(o.tag)
@@ -127,6 +135,10 @@ func (o *TagOptions) RunTag() error {
 		func(info *resource.Info, err error) error {
 			if err != nil {
 				return err
+			}
+
+			if o.untag {
+				o.tag = ""
 			}
 
 			obj := info.Object
