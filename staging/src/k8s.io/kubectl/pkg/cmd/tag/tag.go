@@ -1,6 +1,8 @@
 package tag
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	jsonpatch "gopkg.in/evanphx/json-patch.v4"
@@ -13,6 +15,12 @@ import (
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/util/completion"
 	"k8s.io/kubectl/pkg/util/i18n"
+)
+
+const maxTagLen = 50
+
+var (
+	errTagTooLong = fmt.Errorf("provided tag is too long. The maximum allowed length is %d characters", maxTagLen)
 )
 
 type TagOptions struct {
@@ -67,6 +75,11 @@ func (o *TagOptions) Complete(f cmdutil.Factory, cmd *cobra.Command, args []stri
 }
 
 func (o *TagOptions) Validate() error {
+	tagLen := len(o.tag)
+	if tagLen > maxTagLen {
+		return errTagTooLong
+	}
+
 	return nil
 }
 
