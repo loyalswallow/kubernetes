@@ -2,6 +2,7 @@ package tag
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -20,7 +21,10 @@ import (
 const maxTagLen = 50
 
 var (
-	errTagTooLong = fmt.Errorf("provided tag is too long. The maximum allowed length is %d characters", maxTagLen)
+	errTagTooLong    = fmt.Errorf("provided tag is too long. The maximum allowed length is %d characters", maxTagLen)
+	errTooManyArgs   = fmt.Errorf("too many arguments provided")
+	errNotEnoughArgs = fmt.Errorf("one or more resources must be specified as <resource> <name> or <resource>/<name>")
+	errEmptyTag      = fmt.Errorf("tag cannot be empty")
 )
 
 type TagOptions struct {
@@ -59,8 +63,24 @@ func NewCmdTag(f cmdutil.Factory, ioStreams genericiooptions.IOStreams) *cobra.C
 }
 
 func (o *TagOptions) Complete(f cmdutil.Factory, cmd *cobra.Command, args []string) error {
-	o.resources = append(o.resources, args[:2]...)
-	o.tag = args[2]
+	switch argLen := len(args); {
+	case argLen == 1:
+		if strings.Contains(args[0], "/") {
+			o.resources = append(o.resources, args[0])
+		}
+	case argLen == 2:
+		if strings.Contains(args[0], "/") {
+			o.resources = append(o.resources, args[0])
+			o.tag = strings.TrimSpace(args[1])
+		} else {
+			o.resources = append(o.resources, args...)
+		}
+	case argLen == 3:
+		o.resources = append(o.resources, args[:2]...)
+		o.tag = strings.TrimSpace(args[2])
+	case argLen > 3:
+		return errTooManyArgs
+	}
 
 	var err error
 	o.namespace, _, err = f.ToRawKubeConfigLoader().Namespace()
@@ -75,6 +95,14 @@ func (o *TagOptions) Complete(f cmdutil.Factory, cmd *cobra.Command, args []stri
 }
 
 func (o *TagOptions) Validate() error {
+	if len(o.resources) == 0 {
+		return errNotEnoughArgs
+	}
+
+	if len(o.tag) == 0 {
+		return errEmptyTag
+	}
+
 	tagLen := len(o.tag)
 	if tagLen > maxTagLen {
 		return errTagTooLong
