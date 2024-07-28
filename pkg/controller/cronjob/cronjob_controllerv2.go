@@ -662,6 +662,8 @@ func (jm *ControllerV2) syncCronJob(
 	}
 	cronJob.Status.Active = append(cronJob.Status.Active, *jobRef)
 	cronJob.Status.LastScheduleTime = &metav1.Time{Time: *scheduledTime}
+	cronJob.Status.NextScheduleTime = &metav1.Time{Time: sched.Next(now)}
+
 	updateStatus = true
 
 	t := nextScheduleTimeDuration(cronJob, now, sched)
