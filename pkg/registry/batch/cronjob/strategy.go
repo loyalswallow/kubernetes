@@ -21,6 +21,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/robfig/cron/v3"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -87,6 +90,7 @@ func (cronJobStrategy) GetResetFields() map[fieldpath.APIVersion]*fieldpath.Set 
 func (cronJobStrategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 	cronJob := obj.(*batch.CronJob)
 	cronJob.Status = batch.CronJobStatus{}
+	setNextScheduleTime(cronJob, cronJob.CreationTimestamp)
 
 	cronJob.Generation = 1
 
@@ -98,6 +102,7 @@ func (cronJobStrategy) PrepareForUpdate(ctx context.Context, obj, old runtime.Ob
 	newCronJob := obj.(*batch.CronJob)
 	oldCronJob := old.(*batch.CronJob)
 	newCronJob.Status = oldCronJob.Status
+	setNextScheduleTime(newCronJob, metav1.Now())
 
 	pod.DropDisabledTemplateFields(&newCronJob.Spec.JobTemplate.Spec.Template, &oldCronJob.Spec.JobTemplate.Spec.Template)
 
@@ -195,4 +200,14 @@ func (cronJobStatusStrategy) ValidateUpdate(ctx context.Context, obj, old runtim
 // WarningsOnUpdate returns warnings for the given update.
 func (cronJobStatusStrategy) WarningsOnUpdate(ctx context.Context, obj, old runtime.Object) []string {
 	return nil
+}
+
+func setNextScheduleTime(cronJob *batch.CronJob, now metav1.Time) {
+	sched, err := cron.ParseStandard(cronJob.Spec.Schedule)
+	if err != nil {
+		return
+	}
+
+	nextSched := sched.Next(now.Time)
+	cronJob.Status.NextScheduleTime = &metav1.Time{Time: nextSched}
 }
