@@ -3797,6 +3797,9 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: lastSuccessfulTime
       type:
         namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
+    - name: nextScheduleTime
+      type:
+        namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
 - name: io.k8s.api.batch.v1.Job
   map:
     fields:
@@ -4091,6 +4094,9 @@ var schemaYAML = typed.YAMLObject(`types:
       type:
         namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
     - name: lastSuccessfulTime
+      type:
+        namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
+    - name: nextScheduleTime
       type:
         namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
 - name: io.k8s.api.batch.v1beta1.JobTemplateSpec
